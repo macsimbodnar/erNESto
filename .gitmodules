@@ -1,0 +1,6 @@
+[submodule "cpu"]
+	path = cpu
+	url = git@github.com:macsimbodnar/emu.git
+[submodule "pixello"]
+	path = pixello
+	url = git@github.com:macsimbodnar/pixello.git
