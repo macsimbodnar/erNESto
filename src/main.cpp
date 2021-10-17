@@ -1,5 +1,7 @@
-#include "mos6502.hpp"
 #include "pixello.hpp"
+#include "mos6502.hpp"
+#include "ppu.hpp"
+#include "cartridge.hpp"
 #include <iostream>
 
 constexpr uint32_t w = 60;
@@ -53,7 +55,22 @@ private:
   }
 };
 
+#define TEST_START_LOCATION 0xC000
+
+static void log_clb(const std::string &log) {
+  std::cout << "[CPU] " << log << std::endl;
+}
+
+static void mem_callback(void *usr_data, const uint16_t address,
+                         const access_mode_t read_write, uint8_t &data) {}
+
 int main() {
+
+  MOS6502 cpu(mem_callback, nullptr);
+  cpu.set_log_callback(log_clb);
+  cpu.reset();
+  cpu.set_PC(TEST_START_LOCATION);
+
   pixel p;
 
   p.run();
