@@ -2,7 +2,7 @@
 #include "mos6502.hpp"
 #include "ppu.hpp"
 
-class erNEStop {
+class erNESto {
 public:
 private:
   //----CPU
