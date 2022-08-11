@@ -1,25 +1,29 @@
-#include "pixello.hpp"
-#include "mos6502.hpp"
-#include "ppu.hpp"
-#include "cartridge.hpp"
 #include <iostream>
+#include "cartridge.hpp"
+#include "mos6502.hpp"
+#include "pixello.hpp"
+#include "ppu.hpp"
 
-constexpr uint32_t w = 60;
-constexpr uint32_t h = 40;
+constexpr int32_t pixel_size = 20;
 
-class pixel : public pixello {
+class pixel : public pixello
+{
 public:
-  pixel() : pixello({w, h, 600, 400, 100, 100, "Test pixello", 60}) {}
+  pixel()
+      : pixello({pixel_size, pixel_size, 600, 400, "erNESto", 60,
+                 "assets/font/PressStart2P.ttf", 10})
+  {}
 
 private:
-  void log(const std::string &msg) override { std::cout << msg << std::endl; }
+  void on_init() override {}
 
-  void on_update() override {
+  void on_update() override
+  {
     // clear({0xFF000000});
 
     for (uint32_t i = 0; i < 1000; i++) {
-      const uint32_t x = (rand() % (w - 2)) + 1;
-      const uint32_t y = (rand() % (h - 2)) + 1;
+      const uint32_t x = (rand() % (pixel_size - 2)) + 1;
+      const uint32_t y = (rand() % (pixel_size - 2)) + 1;
 
       pixel_t p;
       p.r = rand() % 255;
@@ -27,7 +31,7 @@ private:
       p.b = rand() % 255;
       p.a = 255;
 
-      draw(x, y, p);
+      draw_pixel(x, y, p);
     }
 
     pixel_t p;
@@ -36,36 +40,40 @@ private:
     p.r = 255;
     p.g = 0;
     p.b = 0;
-    draw(0, 0, p); // top left red
+    draw_pixel(0, 0, p);  // top left red
 
     p.r = 0;
     p.g = 255;
     p.b = 0;
-    draw(w - 1, 0, p); // top tight green
+    draw_pixel(pixel_size - 1, 0, p);  // top tight green
 
     p.r = 0;
     p.g = 0;
     p.b = 255;
-    draw(w - 1, h - 1, p); // bottom right blu
+    draw_pixel(pixel_size - 1, pixel_size - 1, p);  // bottom right blu
 
     p.r = 255;
     p.g = 0;
     p.b = 255;
-    draw(0, h - 1, p); // bottom left purple
+    draw_pixel(0, pixel_size - 1, p);  // bottom left purple
   }
 };
 
 #define TEST_START_LOCATION 0xC000
 
-static void log_clb(const std::string &log) {
+static void log_clb(const std::string& log)
+{
   std::cout << "[CPU] " << log << std::endl;
 }
 
-static void mem_callback(void *usr_data, const uint16_t address,
-                         const access_mode_t read_write, uint8_t &data) {}
+static void mem_callback(void* usr_data,
+                         const uint16_t address,
+                         const access_mode_t read_write,
+                         uint8_t& data)
+{}
 
-int main() {
-
+int main()
+{
   MOS6502 cpu(mem_callback, nullptr);
   cpu.set_log_callback(log_clb);
   cpu.reset();
@@ -73,7 +81,7 @@ int main() {
 
   pixel p;
 
-  p.run();
+  if (p.run()) { return EXIT_FAILURE; }
 
-  return 0;
+  return EXIT_SUCCESS;
 }
