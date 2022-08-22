@@ -10,14 +10,19 @@ class pixel : public pixello
 {
 public:
   pixel()
-      : pixello({pixel_size, pixel_size, 600, 400, "erNESto", 60,
-                 "assets/font/PressStart2P.ttf", 10})
+      : pixello(pixel_size,
+                600,
+                400,
+                "erNESto",
+                60,
+                "assets/font/PressStart2P.ttf",
+                10)
   {}
 
 private:
-  void on_init() override {}
+  void on_init(void*) override {}
 
-  void on_update() override
+  void on_update(void*) override
   {
     // clear({0xFF000000});
 
